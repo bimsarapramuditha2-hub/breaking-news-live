@@ -2,20 +2,22 @@ name: 30-Minute News Sync
 
 on:
   schedule:
-    - cron: '*/30 * * * *' # විනාඩි 30න් 30ට රන් වේ
-  workflow_dispatch: # ඔබට ඕනෑම වෙලාවක බටන් එක ඔබා රන් කළ හැක
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Error 128 එක නැති කරන්න මේක අනිවාර්යයි
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4 # අලුත්ම Version එක (Warning එක Fix වේ)
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5 # අලුත්ම Version එක (Warning එක Fix වේ)
         with:
-          python-version: '3.9'
+          python-version: '3.11'
 
       - name: Install dependencies
         run: pip install feedparser
@@ -25,8 +27,8 @@ jobs:
 
       - name: Commit and Push changes
         run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add index.html
           git commit -m "Auto-Update News" || exit 0
           git push
